@@ -103,7 +103,7 @@ app.post("/login", (req, res) => {
     var username = req.body.username;
     var password = req.body.password;
 
-    connection.query("SELECT * FROM user_data WHERE username = ?", [username], (err, rows, fields) => {
+    connection.query("SELECT * FROM user_for_limited WHERE username = ?", [username], (err, rows, fields) => {
         if (err) {
             console.log(err.message);
             console.log("error in searching DB :-(");
@@ -146,64 +146,64 @@ app.get("/logout", (req, res) => {
 });
 
 
-//NEW USER PAGE
-// app.get("/newuser", (req, res) => {
-//     if (req.isAuthenticated()) {
-//         res.redirect("/");
-//     } else {
-//         res.render("newuser", { authenticationStatus: req.isAuthenticated(), aukaat: req.cookies.aukaat });
-//     }
-// });
+NEW USER PAGE
+app.get("/newuser", (req, res) => {
+    if (req.isAuthenticated()) {
+        res.redirect("/");
+    } else {
+        res.render("newuser", { authenticationStatus: req.isAuthenticated(), aukaat: req.cookies.aukaat });
+    }
+});
 
-// app.post("/newuser", (req, res) => {
-//     var user = req.body;
-//     connection.query("SELECT * FROM user_data WHERE username = ?", [user.username], (err, rows) => {
-//         if (err) {
-//             console.log("error in checking duplicate username ;-(");
-//             res.send({ status: "SITE ERROR PLEASE TRY AGAIN LATER :-(" });
-//         } else if (rows.length != 0) {
-//             res.send({ status: "username not available" });
-//         } else {
-//             bcrypt.hash(user.password, saltRounds, (err, hash) => {
-//                 if (err) {
-//                     console.log("error in hashing password");
-//                 } else {
-//                     connection.query(`INSERT INTO user_data
-//                     (username, password, first, last, email, active_status, aukaat)
-//                     VALUES (?, ?, ?, ?, ?, ?, ?);`, [user.username, hash, user.first, user.last, user.email, 0, user.aukaat], (err) => {
-//                             if (err) {
-//                                 console.log("error while inserting new user ;-(");
-//                                 res.send({ status: "SITE ERROR PLEASE TRY AGAIN LATER :-(" });
-//                             } else {
-//                                 console.log("User Registered: ");
-//                                 console.log(user);
-//                                 res.send({ status: "success" });
+app.post("/newuser", (req, res) => {
+    var user = req.body;
+    connection.query("SELECT * FROM user_data WHERE username = ?", [user.username], (err, rows) => {
+        if (err) {
+            console.log("error in checking duplicate username ;-(");
+            res.send({ status: "SITE ERROR PLEASE TRY AGAIN LATER :-(" });
+        } else if (rows.length != 0) {
+            res.send({ status: "username not available" });
+        } else {
+            bcrypt.hash(user.password, saltRounds, (err, hash) => {
+                if (err) {
+                    console.log("error in hashing password");
+                } else {
+                    connection.query(`INSERT INTO user_data
+                    (username, password, first, last, email, active_status, aukaat)
+                    VALUES (?, ?, ?, ?, ?, ?, ?);`, [user.username, hash, user.first, user.last, user.email, 0, user.aukaat], (err) => {
+                            if (err) {
+                                console.log("error while inserting new user ;-(");
+                                res.send({ status: "SITE ERROR PLEASE TRY AGAIN LATER :-(" });
+                            } else {
+                                console.log("User Registered: ");
+                                console.log(user);
+                                res.send({ status: "success" });
 
-//                                 var activation_url = "http://localhost:2000/activate/" + cryptr.encrypt(user.username);
+                                var activation_url = "http://localhost:2000/activate/" + cryptr.encrypt(user.username);
 
-//                                 transporter.sendMail({
-//                                     from: "akshat.prodexiitkgp@gmail.com",
-//                                     to: user.email,
-//                                     subject: "Email Verification for Prodex Account",
-//                                     html: "<h3>Thank you for registering for Prodex IIT Kharagpur</h3><br><br><br><h5><a href=" + activation_url + ">Click Here</a> to verify </h5>"
-//                                 }, (err, info) => {
-//                                     if (err) {
-//                                         console.log(err);
-//                                         console.log("error in sending mails ;-(");
-//                                     } else {
-//                                         console.log(info);
-//                                     }
-//                                 });
+                                transporter.sendMail({
+                                    from: "akshat.prodexiitkgp@gmail.com",
+                                    to: user.email,
+                                    subject: "Email Verification for Prodex Account",
+                                    html: "<h3>Thank you for registering for Prodex IIT Kharagpur</h3><br><br><br><h5><a href=" + activation_url + ">Click Here</a> to verify </h5>"
+                                }, (err, info) => {
+                                    if (err) {
+                                        console.log(err);
+                                        console.log("error in sending mails ;-(");
+                                    } else {
+                                        console.log(info);
+                                    }
+                                });
 
-//                             }
-//                         });
-//                 }
-//             })
+                            }
+                        });
+                }
+            })
 
-//         }
-//     })
+        }
+    })
 
-// });
+});
 
 // //ACTIVATION OF ACCOUNTS
 
@@ -584,7 +584,7 @@ app.get("/logout", (req, res) => {
 
 app.get("/submit-idea", (req, res) => {
 
-    res.render("newidea");
+    res.render("newidea", {authenticationStatus: req.isAuthenticated(), aukaat: requestAnimationFrame.cookie.aukaat});
 
 })
 
@@ -603,6 +603,21 @@ app.post("/submit-idea", (req, res) => {
     })
 
 })
+
+//ADMIN IDEA REVIEW PAGE
+
+app.get("/review-ideas", (req, res) => {
+
+    if(!req.isAuthenticated()){
+        res.redirect("/");
+    }else{
+        if(req.cookie.aukaat == "admin"){
+
+            res.render("reviewideas.pug", {authenticationStatus: req.isAuthenticated(), aukaat: requestAnimationFrame.cookie.aukaat});
+        }
+    }
+
+});
 
 
 // //PROFILE PHOTO FETCH HANDLER
@@ -652,6 +667,6 @@ app.post("/submit-idea", (req, res) => {
 
 
 //START SERVER
-app.listen(2000, () => {
-    console.log("server started on port http://localhost:2000 :-)");
+app.listen(8801, () => {
+    console.log("server started on port http://localhost:8801 :-)");
 });
