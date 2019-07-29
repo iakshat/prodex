@@ -10,8 +10,11 @@ html
 
         h2 Submit Ideas
 
-        h5 Name:
+        h5 Your Name:
         input#name(type = 'text', placeholder="Name")
+
+        h5 Email:
+        input#email(type = 'text', placeholder="example@email.com")
 
         h5 Basic Idea:
         input#summary(type = 'text' placeholder = "Eg. A Revolutionary smart pen")
@@ -23,7 +26,7 @@ html
         br
         button#submit Send!
 
-        #out
+        div#output
 
         script(src = "/script/jquery.js")
 
@@ -34,6 +37,7 @@ html
 
                 var dataToSend = {
                     name: $("#name").val(),
+                    email: $("#email").val(),
                     summary: $("#summary").val(),
                     idea: $("#idea").val()
                 };
@@ -45,10 +49,17 @@ html
                     data: dataToSend,
                     dataTyoe : "json",
                     success: (res)=>{
-                        if(res == "success!")
-                            $("out").val("Idea submitted successfully!!");
+                        if(res == "success!"){
+                            console.log(res);
+                            $("#output").text("Idea submitted successfully!! \n btw there's no limit on submitting ideas do contribute more");
+                            $("#name").val("");
+                            $("#summary").val("");
+                            $("#idea").val("");
+                            $("#email").val("");
+
+                        }
                         else
-                            $("out").val("Some Error occurred from our end. Please try again later.")
+                            $("#output").text("Some Error occurred from our end. Please try again later.");
                     }
 
                 })

@@ -1,0 +1,32 @@
+html
+    head
+        title Review
+    
+    body
+
+        include ./header.pug
+
+        include ./navbar.pug
+
+        //- p #{JSON.stringify(data)}
+
+        h1 Ideas List
+
+        for entry in data
+            a(href="/idea/" + entry.id).
+                id: #{entry.id}
+            br
+            a(href="/idea/" + entry.id).
+                name: #{entry.name} 
+            br
+            a(href="/idea/" + entry.id).
+                email: #{entry.email} 
+            br
+            a(href="/idea/" + entry.id).
+                summary: #{entry.summary}
+            br
+            br
+
+
+
+        include ./footer.pug

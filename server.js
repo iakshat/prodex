@@ -103,7 +103,7 @@ app.post("/login", (req, res) => {
     var username = req.body.username;
     var password = req.body.password;
 
-    connection.query("SELECT * FROM user_for_limited WHERE username = ?", [username], (err, rows, fields) => {
+    connection.query("SELECT * FROM user_data WHERE username = ?", [username], (err, rows, fields) => {
         if (err) {
             console.log(err.message);
             console.log("error in searching DB :-(");
@@ -146,64 +146,64 @@ app.get("/logout", (req, res) => {
 });
 
 
-NEW USER PAGE
-app.get("/newuser", (req, res) => {
-    if (req.isAuthenticated()) {
-        res.redirect("/");
-    } else {
-        res.render("newuser", { authenticationStatus: req.isAuthenticated(), aukaat: req.cookies.aukaat });
-    }
-});
+//NEW USER PAGE
+// app.get("/newuser", (req, res) => {
+//     if (req.isAuthenticated()) {
+//         res.redirect("/");
+//     } else {
+//         res.render("newuser", { authenticationStatus: req.isAuthenticated(), aukaat: req.cookies.aukaat });
+//     }
+// });
 
-app.post("/newuser", (req, res) => {
-    var user = req.body;
-    connection.query("SELECT * FROM user_data WHERE username = ?", [user.username], (err, rows) => {
-        if (err) {
-            console.log("error in checking duplicate username ;-(");
-            res.send({ status: "SITE ERROR PLEASE TRY AGAIN LATER :-(" });
-        } else if (rows.length != 0) {
-            res.send({ status: "username not available" });
-        } else {
-            bcrypt.hash(user.password, saltRounds, (err, hash) => {
-                if (err) {
-                    console.log("error in hashing password");
-                } else {
-                    connection.query(`INSERT INTO user_data
-                    (username, password, first, last, email, active_status, aukaat)
-                    VALUES (?, ?, ?, ?, ?, ?, ?);`, [user.username, hash, user.first, user.last, user.email, 0, user.aukaat], (err) => {
-                            if (err) {
-                                console.log("error while inserting new user ;-(");
-                                res.send({ status: "SITE ERROR PLEASE TRY AGAIN LATER :-(" });
-                            } else {
-                                console.log("User Registered: ");
-                                console.log(user);
-                                res.send({ status: "success" });
+// app.post("/newuser", (req, res) => {
+//     var user = req.body;
+//     connection.query("SELECT * FROM user_data WHERE username = ?", [user.username], (err, rows) => {
+//         if (err) {
+//             console.log("error in checking duplicate username ;-(");
+//             res.send({ status: "SITE ERROR PLEASE TRY AGAIN LATER :-(" });
+//         } else if (rows.length != 0) {
+//             res.send({ status: "username not available" });
+//         } else {
+//             bcrypt.hash(user.password, saltRounds, (err, hash) => {
+//                 if (err) {
+//                     console.log("error in hashing password");
+//                 } else {
+//                     connection.query(`INSERT INTO user_data
+//                     (username, password, first, last, email, active_status, aukaat)
+//                     VALUES (?, ?, ?, ?, ?, ?, ?);`, [user.username, hash, user.first, user.last, user.email, 0, user.aukaat], (err) => {
+//                             if (err) {
+//                                 console.log("error while inserting new user ;-(");
+//                                 res.send({ status: "SITE ERROR PLEASE TRY AGAIN LATER :-(" });
+//                             } else {
+//                                 console.log("User Registered: ");
+//                                 console.log(user);
+//                                 res.send({ status: "success" });
 
-                                var activation_url = "http://localhost:2000/activate/" + cryptr.encrypt(user.username);
+//                                 var activation_url = "http://localhost:2000/activate/" + cryptr.encrypt(user.username);
 
-                                transporter.sendMail({
-                                    from: "akshat.prodexiitkgp@gmail.com",
-                                    to: user.email,
-                                    subject: "Email Verification for Prodex Account",
-                                    html: "<h3>Thank you for registering for Prodex IIT Kharagpur</h3><br><br><br><h5><a href=" + activation_url + ">Click Here</a> to verify </h5>"
-                                }, (err, info) => {
-                                    if (err) {
-                                        console.log(err);
-                                        console.log("error in sending mails ;-(");
-                                    } else {
-                                        console.log(info);
-                                    }
-                                });
+//                                 transporter.sendMail({
+//                                     from: "akshat.prodexiitkgp@gmail.com",
+//                                     to: user.email,
+//                                     subject: "Email Verification for Prodex Account",
+//                                     html: "<h3>Thank you for registering for Prodex IIT Kharagpur</h3><br><br><br><h5><a href=" + activation_url + ">Click Here</a> to verify </h5>"
+//                                 }, (err, info) => {
+//                                     if (err) {
+//                                         console.log(err);
+//                                         console.log("error in sending mails ;-(");
+//                                     } else {
+//                                         console.log(info);
+//                                     }
+//                                 });
 
-                            }
-                        });
-                }
-            })
+//                             }
+//                         });
+//                 }
+//             })
 
-        }
-    })
+//         }
+//     })
 
-});
+// });
 
 // //ACTIVATION OF ACCOUNTS
 
@@ -584,18 +584,17 @@ app.post("/newuser", (req, res) => {
 
 app.get("/submit-idea", (req, res) => {
 
-    res.render("newidea", {authenticationStatus: req.isAuthenticated(), aukaat: requestAnimationFrame.cookie.aukaat});
+    res.render("newidea", {authenticationStatus: req.isAuthenticated(), aukaat: req.cookies.aukaat});
 
 })
 
 app.post("/submit-idea", (req, res) => {
 
     // console.log(req.body)
-    connection.query("INSERT INTO ideas (name, summary, idea) VALUES (?, ?, ?);", [req.body.name, req.body.summary, req.body.idea], (err) => {
+    connection.query("INSERT INTO ideas (name, summary, idea, email) VALUES (?, ?, ?, ?);", [req.body.name, req.body.summary, req.body.idea, req.body.email], (err) => {
         if(err){
             console.log("Error in submitting idea ;-(");
             res.end("error!");
-            throw err;
         }else{
             res.send("success!");
             console.log(`new idea submitted by: ${req.body.name}`);
@@ -611,9 +610,45 @@ app.get("/review-ideas", (req, res) => {
     if(!req.isAuthenticated()){
         res.redirect("/");
     }else{
-        if(req.cookie.aukaat == "admin"){
+        if(req.cookies.aukaat == "admin"){
 
-            res.render("reviewideas.pug", {authenticationStatus: req.isAuthenticated(), aukaat: requestAnimationFrame.cookie.aukaat});
+            connection.query("SELECT * FROM ideas", (err, rows) => {
+                if(err)
+                    console.log("Error in reading ideas ;-( ");
+                else{
+                    console.log("admin fetched ideas for review");
+                    res.render("reviewideas.pug", {authenticationStatus: req.isAuthenticated(), aukaat: req.cookies.aukaat, data : rows});
+
+                }
+            })
+        }
+    }
+
+});
+
+//IDEAS PAGE
+
+app.get("/idea/:id", (req, res) => {
+
+    if(!req.isAuthenticated()){
+        res.redirect("/");
+    }else{
+        if(req.cookies.aukaat == "admin"){
+
+            connection.query("SELECT * FROM ideas WHERE id = ?", [req.params.id], (err, rows) => {
+                if(err){
+                    console.log("Error in accessing individual idea ;-)");
+                }else{
+
+                    if(rows.length == 0){
+                        res.send("no data here");
+                    }else{
+
+                        res.render("individualidea.pug", {authenticationStatus: req.isAuthenticated(), aukaat: req.cookies.aukaat, data : rows})
+
+                    }                    
+                }
+            })
         }
     }
 
