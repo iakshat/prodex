@@ -1,0 +1,42 @@
+html
+    head
+        title Projects
+    
+    body
+        include ./header.pug
+
+        include ./navbar.pug
+
+        h3 Projects:
+        br
+
+        h5 On Going:
+        for proj in started
+
+            h6 name : #{proj.name}
+            br
+
+
+        br
+        
+        h5 Upcoming:
+        for proj in upcoming
+
+            h6 name : #{proj.name}
+            br
+
+
+        br
+
+        h5 Completed:
+        for proj in completed
+
+            h6 name : #{proj.name}
+            br
+
+
+        br
+
+
+
+        include ./footer.pug     

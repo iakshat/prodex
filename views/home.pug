@@ -1,0 +1,23 @@
+html
+    head
+        title Home
+    body
+        
+        include ./header.pug
+
+        include ./navbar.pug
+
+        h1 This is the Home Page
+
+        include ./footer.pug
+
+        script(src="/script/jquery.js")
+
+        script.
+            console.log($(document));
+
+    style.
+        body{
+            text-align: center;
+        }
+        

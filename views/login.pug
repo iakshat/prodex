@@ -1,0 +1,58 @@
+html
+    head
+        title Login
+    body
+        include ./header.pug
+
+        include ./navbar.pug
+
+        h2 Login:
+                
+        input#username(type = "text", required=required, placeholder="Username")
+        br
+        br
+        input#password(type = "password", required=required, placeholder="Password")
+        br
+        br
+        button(id="login", class="login") Login
+
+        script(src="/script/jquery.js")
+
+        script.
+            var username;
+            var password;
+            var response = 'hdnjhs';
+
+            $("#username").keyup(function() {  
+                username =  $( this ).val();
+            });
+            $("#password").keyup(function() {  
+                password =  $( this ).val();
+            });
+
+            
+            $('#login').on("click", function () {
+                $.ajax({
+                method: "POST",
+                url: "/login",
+                data: {'username': username, 'password': password},
+                dataType: 'json',
+                success: function(text){
+                    console.log(text.status);
+                    $("#output").text(text.status);
+                    if(text.status === "success"){
+                        window.location.href = "/";
+                    }}
+                })
+                 
+            });
+
+        br
+        br
+        -
+            direction = "Please enter your details!"
+    
+        div#output.
+            #{direction}
+
+        include ./footer.pug

@@ -1,0 +1,116 @@
+html
+    head
+        title Approve Articles
+    
+    body
+
+        include ./header.pug
+
+        include ./navbar.pug
+
+        -
+            var files = (fileList)
+            var fileSet = JSON.stringify(files)
+            // console.log(files)
+            // console.log(typeof(files))
+            var userId, articleId
+            var editorDisplay = false
+
+        
+        for item, key in files
+            button(id=key, class="userChoise") #{key}
+            br
+            br
+
+
+        script(src="/script/jquery.js")
+        script.
+
+            var files = !{fileSet}
+            var userId = "#{userId}"
+            //- console.log((files))
+            $('.userChoise').click(function() {
+                //- console.log("executed!!")
+                userId = $(this).attr('id');
+                var Html = ""
+                //- console.log(files[id])
+                
+                for(article in files[userId]){
+                    //- console.log(article)
+                    Html += "<button class=\"articleChoise\" onclick=articleClicked($(this).attr('id')) id=\"" + article+"\">"+ files[userId][article] +"</button><br>"
+                }
+
+                //- console.log(Html)
+                $("#output").html(Html)
+            })
+
+        //- p #{JSON.stringify(files)}
+        p#output(style="display : block") Output Here
+
+        p#art
+
+        script.
+            var files = !{fileSet}
+            var articleId = "#{articleId}"
+            var userId = "#{userId}"
+            var editorDisplay = "#{editorDisplay}"
+
+            function articleClicked(id) {
+                articleId = id
+                $("#art").html(`
+                    <h5> User Name:</h5>
+                    <input id="userName" type="text" value=`+ userId +` disabled="disabled">
+
+                    <h5> Article Name:</h5> 
+                    <input id="articleName" type="text" value="`+ files[userId][articleId] +`" disabled="disabled">
+
+                `)
+                //- console.log(articleId)
+                //- console.log(userId)
+                var dataToSend = {
+                        'user': userId,
+                        'article': files[userId][articleId]
+                };
+
+                $.ajax({
+                    type: "POST",
+                    url: "/editorArticleFetch",
+                    data: dataToSend,
+                    success: (articleText) => {
+                        //- console.log(articleText)
+                        $("#art").append(`
+                            <h5> Article Data:</h5>
+                            <textarea id="articleText" type="text" cols=100 rows=10>`+articleText.toString().trim()+`</textarea>
+                            <br>
+                            <br>
+                                            
+                            <button id="sendToEditor" onclick=sendToAdmin()> Submit to Admin </button>
+                        `);
+                    }
+                });
+
+            }       
+
+            function sendToAdmin() {
+                var data = document.getElementById("articleText").value;
+                var articleData = {
+                    user: userId,
+                    article: files[userId][articleId],
+                    text: data
+                };
+
+                console.log(data)
+                $.ajax({
+                    method: "POST",
+                    url: "/reviewarticle/editor",
+                    data: articleData,
+                    success: (response) => {
+                        if(response == "success"){
+                            $("#art").html("Data Sent To Admin.")
+                            window.location.href = "/"
+                        }
+                    }
+                })
+            }
+
+        include ./footer.pug

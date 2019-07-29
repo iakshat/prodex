@@ -1,0 +1,59 @@
+html
+    head
+        title New Project
+    
+    body
+
+        include ./header.pug
+
+        include ./navbar.pug
+
+        h5 Name of Project: 
+        input#name(type = 'text', placeholder="Name", '')
+
+        h5 Details:
+        textarea#details(type="text", cols=100, rows=10, placeholder="Article")
+
+        h5 Sumary: 
+        textarea#summary(type="text", cols=100, rows=5, placeholder="Article")
+
+        h5 Budget: 
+        input#budget(type="text", placeholder="🤑🤑🤑🤑🤑🤑")
+
+        br
+        br
+        br
+
+        button#submit Add Project
+
+        #output
+
+
+        script(src="/script/jquery.js")
+        script.
+            $("#submit").on("click", function () {
+
+                var dataToSend = {};
+                dataToSend.name = $("#name").val();;
+                dataToSend.details = $("#details").val();
+                dataToSend.summary = $("#summary").val();
+                dataToSend.budget = $("#budget").val();
+
+                $.ajax({
+                    method: "POST",
+                    url: "/new-project",
+                    data: dataToSend,
+                    success: (data) => {
+
+                        //- console.log(data);
+                        $("#output").text(data);
+                        setTimeout(5000);
+                        window.location.href = "/";
+
+                    }
+                })
+
+            })
+
+
+        include ./footer.pug

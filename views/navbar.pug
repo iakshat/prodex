@@ -1,0 +1,45 @@
+div.topnav
+    a(href="/", style="float:left;") Home
+    
+    if(authenticationStatus)
+        a(href="/logout") Logout
+        a(href="/profile") Profile
+        a(href="/articles") Articles
+        a(href="/newarticle") New Article
+        a(href="/projects") Projects
+    else
+        a(href="/login") Login
+        a(href="/newuser") New User
+
+    if(authenticationStatus && aukaat == "editor")
+        a(href="/reviewarticle/editor") Edit Articles
+    if(authenticationStatus && aukaat == "admin")
+        a(href="/reviewarticle/admin") Review Articles
+
+
+
+style.
+    .topnav{
+        width: 100%;
+        padding: 5px 0px;
+        margin-top: 5px;
+        margin-bottom: 5px;
+        background-color: #23DFC9;
+        color: whitesmoke;
+        float: left;
+        display: block;
+    }
+
+    .topnav a{
+        display: block;
+        padding: 8px 10px;
+        background-color: #23DFC9;
+        color: whitesmoke;
+        float: right;
+        text-decoration:none;
+    }
+
+    .topnav a:hover{
+        background-color: #4db6ac;
+        color: white
+    }

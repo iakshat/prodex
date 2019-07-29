@@ -1,0 +1,38 @@
+html
+    head
+        title Profile
+    
+    body    
+        -
+            var user = userData;
+            // console.log(user);
+            var authenticationStatus = userData.authenticationStatus;
+            var pic_url = "/taikhana/images/"+user.username;
+            var work_url = "/taikhana/works/"+user.username;
+
+
+        include ./header.pug
+
+        include ./navbar.pug
+
+        div.row
+            
+            if(user.aukaat === "professor")
+                include ./profileprof.pug
+            if(user.aukaat === "sponsorer")
+                include ./profilesponsorer.pug
+            else
+                include ./profilework.pug
+            
+
+            
+            include ./profilebasic.pug
+
+            
+
+        include ./footer.pug
+    
+    style.
+        .row:after{
+            clear: both;
+        }

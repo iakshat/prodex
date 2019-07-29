@@ -1,0 +1,80 @@
+html
+    head
+        title New Article
+    
+    body
+
+        include ./header.pug
+
+        include ./navbar.pug
+
+        h2 Article Entry:
+
+        h5 Article Name: 
+        input#articleName(type="text", placeholder="Name")
+
+        h5 Article Data:
+        textarea#articleText(type="text", cols=100, rows=10, placeholder="Article")
+        br
+        br
+        button#save Save Article
+                      
+        button#sendToEditor Submit to Editor
+        br
+        br
+        br
+        div#output.
+                       
+
+        include ./footer.pug
+
+    script(src="/script/jquery.js")
+    script.
+
+        $("#save").on("click", function(){
+            var data = {
+                name : $("#articleName").val(),
+                data : $("#articleText").val(), 
+                todo : "save"
+            };
+
+            $.ajax({
+                method: "POST",
+                url: "/newarticle",
+                data: data,
+                dataType: "json",
+                success: (text)=>{
+                    console.log(text);
+                    if(text.status === "success"){
+                        $("#output").text("Saved Successfully!");
+                        window.location.href = "/articles";
+                    }else{
+                        $("#output").text("SITE ERROR TRY AGAIN LATER :-(");
+                    }
+                }
+            });
+        });
+
+        $("#sendToEditor").on("click", function(){
+
+            var data = {
+                name : $("#articleName").val(),
+                data : $("#articleText").val(), 
+                todo : "sendToEditor"
+            };
+
+            $.ajax({
+                method: "POST",
+                url: "/newarticle",
+                data: data,
+                dataType: "json",
+                success: (text)=>{
+                    if(text.status === "success"){
+                        $("#output").text("Sent to Editor Successfully!");
+                    }else{
+                        $("#output").text("SITE ERROR TRY AGAIN LATER :-(");
+                    }
+                }
+            });
+        });
+                

@@ -1,0 +1,97 @@
+html
+    head
+        title Articles
+    body
+
+        - var authenticationStatus = list.authenticationStatus;
+
+        include ./header.pug
+
+        include ./navbar.pug
+
+        -
+            //- console.log(authenticationStatus);
+            var articles = JSON.stringify(list);
+            var keys = [];
+
+        - 
+            for(var index in list){
+                if(index != "authenticationStatus"){
+                    keys.push(index);
+                }  
+            }
+
+
+        
+        for key in keys
+            button(id=keys.indexOf(key)) #{key}
+            br
+        
+        div#articleContent Your Article Here
+
+        #output
+
+        script(src="/script/jquery.js")
+        script.
+
+            var keyset = "!{keys}";
+            keyset = keyset.split(",");
+            //- console.log(keyset);
+            //- console.log(typeof(keyset));
+            var articleset = !{articles};
+            //- console.log(articles); 
+            //- console.log(typeof(articles));
+            var articlename = ""
+
+            $('button').click(function() {
+                var id = $(this).attr('id');
+                var article_key = keyset[id];
+                articlename = keyset[id]
+                var article_data = articleset[article_key];
+                //- console.log(article_data);
+                var html = "<textarea id='articleText' type='text' cols=100 rows=10>"+article_data+"</textarea><br><button onclick=proceed()>Save</button><button onclick=location.reload()>Cancel</button><button onclick=sendToEditor()>Send To Editor</button>"
+                $("#articleContent").html(html);
+            });
+
+            function proceed(){
+                var corrected = document.getElementById("articleText").value
+                //- console.log(articlename)
+                //- console.log(corrected)
+                var updateData = {
+                    article: articlename,
+                    text: corrected
+                };
+                
+                $.post("/articles", updateData, (res) => {
+                    if(res === "completed"){
+                        window.location.href = "/articles"
+                    }
+                })            
+            }
+
+            function sendToEditor() {
+                var corrected = document.getElementById("articleText").value
+                var data = {
+                    name : articlename,
+                    data : corrected, 
+                    todo : "sendToEditor"
+                };
+
+                $.ajax({
+                    method: "POST",
+                    url: "/newarticle",
+                    data: data,
+                    dataType: "json",
+                    success: (text)=>{
+                        if(text.status === "success"){
+                            $("#output").text("Sent to Editor Successfully!");
+                            setTimeout(function(){window.location.reload();},1000)
+                        }else{
+                            $("#output").text("SITE ERROR TRY AGAIN LATER :-(");
+                        }
+                    }
+                });
+            }
+
+
+        include ./footer.pug

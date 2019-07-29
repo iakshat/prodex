@@ -1,0 +1,118 @@
+html
+    head
+        title Approve Articles
+    
+    body
+
+        include ./header.pug
+
+        include ./navbar.pug
+
+        -
+            var files = (fileList)
+            var fileSet = JSON.stringify(files)
+            
+            var userId, articleId
+            
+
+        h4 Choose user:        
+        for item, key in files
+            button(id=key, class="userChoise") #{key}
+            br
+            br
+
+
+        script(src="/script/jquery.js")
+        script.
+
+            var files = !{fileSet}
+            var userId = "#{userId}"
+            
+            $('.userChoise').click(function() {
+                userId = $(this).attr('id');
+                var Html = ""
+                
+                for(article in files[userId]){
+                    Html += "<button class=\"articleChoise\" onclick=articleClicked($(this).attr('id')) id=\"" + article+"\">"+ files[userId][article] +"</button><br>"
+                }
+
+                $("#output").html(Html)
+            })
+
+        h4 Article choise:
+        p#output(style="display : block") Output Here
+
+        p#art
+
+        script.
+            var files = !{fileSet}
+            var articleId = "#{articleId}"
+            var userId = "#{userId}"
+            var editorDisplay = "#{editorDisplay}"
+
+            function articleClicked(id) {
+                //- console.log("here")
+                articleId = id
+                $("#art").html(`
+                    <h5> User Name:</h5>
+                    <input id="userName" type="text" value=`+ userId +` disabled="disabled">
+
+                    <h5> Article Name:</h5> 
+                    <input id="articleName" type="text" value="`+ files[userId][articleId] +`" disabled="disabled">
+
+                `)
+                var dataToSend = {
+                        'user': userId,
+                        'article': files[userId][articleId]
+                };
+
+                $.ajax({
+                    type: "POST",
+                    url: "/adminArticleFetch",
+                    data: dataToSend,
+                    success: (articleText) => {
+                        //- console.log(articleText)
+                        $("#art").append(`
+                            <h5> Article Data:</h5>
+                            <textarea id="articleText" type="text" cols=100 rows=10 disabled="disabled">`+articleText.toString().trim()+`</textarea>
+                            <br>
+                            <br>
+                                            
+                            <button id="verifyArticle" onclick=sendTo("homepage")> Le aao homepage pe!! </button>
+                            <button id="sendToEditor" onclick=sendTo("editor")> Send Back to Editor </button>
+                        `);
+                    }
+                });
+
+            }       
+
+            function sendTo(str) {
+                var data = document.getElementById("articleText").value;
+                var articleData = {
+                    user: userId,
+                    article: files[userId][articleId],
+                    text: data,
+                    //- todo: "SendBackToEditor"
+                };
+
+                if(str == "editor"){
+                    articleData[ "todo" ] = "SendBackToEditor"
+                }else if(str == "homepage"){
+                    articleData[ "todo" ] = "sendToHomepage"
+                }
+
+                //- console.log(data)
+                $.ajax({
+                    method: "POST",
+                    url: "/reviewarticle/admin",
+                    data: articleData,
+                    success: (response) => {
+                        if(response == "success"){
+                            $("#art").html("Data Sent To Editor.")
+                            window.location.href = "/"
+                        }
+                    }
+                })
+            }
+
+        include ./footer.pug

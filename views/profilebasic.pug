@@ -1,0 +1,22 @@
+div.right
+
+    h4 Personal Info:
+
+    image(src=pic_url, width="100px")
+    h5
+        |Name: #{user.first +" "+ user.last}
+        br
+        |Email: #{user.email}
+        br
+        |Username: #{user.username}
+     
+
+style.
+    .right{
+        width: 38%;
+        float: left;
+        background-color:whitesmoke;
+        color: #3f3f3f;
+        margin-right: 1%;
+        margin-left: 1%;
+    }

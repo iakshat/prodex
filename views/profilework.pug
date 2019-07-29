@@ -1,0 +1,25 @@
+div.left#leftcol
+    h4 Work Details:
+ 
+    h6#workdata
+
+    script(src="/script/jquery.js")
+    script.
+        var work_url = "#{work_url}";
+        $.getJSON(work_url, function(json){
+            $.each(json, function(index, value){
+                $("#workdata").append(index+" : "+value+"\n");
+            });
+        });
+
+        
+
+style.
+    .left{
+        width: 58%;
+        float: left;
+        background-color: whitesmoke;
+        color: #3f3f3f;
+        margin-left: 1%;
+        margin-right: 1%;
+    }

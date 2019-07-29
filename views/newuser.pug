@@ -1,0 +1,85 @@
+html
+    head
+        title New User
+    body
+        include ./header.pug
+
+        include ./navbar.pug
+
+        h2 New User Registration:
+
+        h5 First Name: 
+        input#first(type="text", placeholder="first name")
+        h5 Last Name: 
+        input#last(type="text", placeholder="last name")
+        br
+        br
+        h5 Username: 
+        input#username(type="text", placeholder="Username")
+        br
+        br
+        h5 Email: 
+        input#email(type="text", placeholder="Email Id")
+        br
+        br
+        h5 Password: 
+        input#password(type="password", placeholder="Password")
+        br
+        br
+        h5 Confirm Password: 
+        input#passwd(type="password", placeholder="Password")
+        br
+        br
+        select#aukaat
+            option(value="student") Student
+            option(value="professor") Professor
+            option(value="sponsorer") Sponsorer
+        br
+        br
+        button#register Register
+
+        #output
+
+
+        script(src="/script/jquery.js")
+
+        script.
+
+            $("#register").on("click", function() {
+                var data = {
+                    first : $("input#first").val(),
+                    last : $("input#last").val(),
+                    username : $("input#username").val(),
+                    email : $("input#email").val(),
+                    aukaat : $("#aukaat").val(),
+                    password : $("input#password").val(),
+                    passwd : $("input#passwd").val()
+                };
+
+                if(data.password != data.passwd){
+                    $("#output").text("Passwords don't match");
+                    $("#password").val("");
+                    $("#passwd").val("");
+                }else{
+                    $.ajax({
+                        method: "POST",
+                        url: "/newuser",
+                        data: data,
+                        dataType: "json",
+                        success : function(response){
+                            if(response.status === "success"){
+                                $("#output").text("User successfully registered \n Please verify your email by clicking on the link sent to ur email");
+                            }else{
+                                $("#output").text(response.status);
+                                console.log(response.status);
+                            }
+                        } 
+                    })
+                    
+                }
+                
+                console.log(data);
+            })
+            
+
+        include ./footer.pug
