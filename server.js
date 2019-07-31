@@ -580,6 +580,31 @@ app.post("/new-project", (req, res) => {
 })
 
 
+// IDEA SUBMISSION PAGE
+
+app.get("/submit-idea", (req, res) => {
+
+    res.render("newidea");
+
+})
+
+app.post("/submit-idea", (req, res) => {
+
+    // console.log(req.body)
+    connection.query("INSERT INTO ideas (name, summary, idea) VALUES (?, ?, ?);", [req.body.name, req.body.summary, req.body.idea], (err) => {
+        if(err){
+            console.log("Error in submitting idea ;-(");
+            res.end("error!");
+            throw err;
+        }else{
+            res.send("success!");
+            console.log(`new idea submitted by: ${req.body.name}`);
+        }
+    })
+
+})
+
+
 //PROFILE PHOTO FETCH HANDLER
 app.get("/taikhana/images/:username", (req, res) => {
     if (req.isAuthenticated() && req.user === req.params.username) {

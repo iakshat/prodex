@@ -1,0 +1,56 @@
+html
+    head
+        title Idea
+    
+    body
+
+        include ./header.pug
+
+        include ./navbar.pug
+
+        h5 Name:
+        input#name(type = 'text', placeholder="Name")
+
+        h5 Basic Idea:
+        input#summary(type = 'text' placeholder = "Eg. A Revolutionary smart pen")
+
+        h5 Please clearly explain you idea:
+        textarea#idea(placeholder = "Idea" cols = 100 rows = 18)
+
+        br
+        br
+        button#submit Send!
+
+        #out
+
+        script(src = "/script/jquery.js")
+
+        script.
+
+            console.log("here");
+            $("#submit").on('click', function(){
+
+                var dataToSend = {
+                    name: $("#name").val(),
+                    summary: $("#summary").val(),
+                    idea: $("#idea").val()
+                };
+
+                $.ajax({
+
+                    method: 'POST',
+                    url: "/submit-idea",
+                    data: dataToSend,
+                    dataTyoe : "json",
+                    success: (res)=>{
+                        if(res == "success!")
+                            $("out").val("Idea submitted successfully!!");
+                        else
+                            $("out").val("Some Error occurred from our end. Please try again later.")
+                    }
+
+                })
+
+            })
+
+        include ./footer.pug
