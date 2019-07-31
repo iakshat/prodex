@@ -1,15 +1,18 @@
 div.topnav
     a(href="/", style="float:left;") Home
-    
+
+    a(href="/submit-idea") Suggest New Ideas
+
+
     if(authenticationStatus)
         a(href="/logout") Logout
         a(href="/profile") Profile
         a(href="/articles") Articles
         a(href="/newarticle") New Article
         a(href="/projects") Projects
-    else
-        a(href="/login") Login
-        a(href="/newuser") New User
+    //- else
+    //-     a(href="/login") Login
+    //-     a(href="/newuser") New User
 
     if(authenticationStatus && aukaat == "editor")
         a(href="/reviewarticle/editor") Edit Articles
