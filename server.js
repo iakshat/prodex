@@ -566,10 +566,16 @@ app.get("/new-project", (req, res) => {
 })
 
 app.post("/new-project", (req, res) => {
-
     console.log(req.body);
-    res.send("recieved!");
 
+    connection.query("INSERT INTO projects (name, details, summary, status, budget) VALUES (?,?,?,'upcoming', ?);", [req.body.name, req.body.details, req.body.summary, parseInt(req.body.budget)], (err) => {
+        if(err){
+            console.log("error in adding new project to DB :-(");
+        }else{
+            console.log(`admin added new project : ${req.body.name} with budget: ₹${req.body.budget}`);
+            res.send("recieved!");
+        }
+    });
 
 })
 
