@@ -1,0 +1,77 @@
+footer
+{
+    clear: both;
+	border-top:5px white solid;
+	height:auto;
+	width:100%;
+	background-color:#000;
+	color:#7e7e7e;
+	font-size:12px;
+	position:absolute;
+	padding:2px 0px;
+	display:inline-block;
+	font-family: Nike TG,Helvetica Neue,Helvetica,Arial,sans-serif;
+}
+
+.sec1
+{
+	/* background-color: blue; */
+	position: relative;
+    clear: both;
+	margin-left:5%;
+	margin-right:5%;
+	margin-top: 5%;
+	margin-bottom: 5%;
+	float: right;
+	font-family: Nike TG,Helvetica Neue,Helvetica,Arial,sans-serif;
+}
+
+
+.heading
+{
+	color:#fff;
+	word-spacing: 0.8em;
+	letter-spacing: 2px;
+	padding:3px;
+	font-family: Nike TG,Helvetica Neue,Helvetica,Arial,sans-serif;
+}
+
+
+
+.facebook
+{
+	height:20px;
+	width:20px;
+	position:absolute;
+	right:10%;
+	top:30px;
+}
+
+.foot
+{
+    text-decoration: none;
+	color:#fff;
+}
+
+.copy
+{
+	padding-top:10px;
+	border-top:1px white solid;
+	margin-top:5%;
+	margin-bottom: 0%;
+    text-align:center;
+	bottom: 0%;
+	margin-bottom: 0%;
+	background-color: whitesmoke;
+}
+
+.about
+{
+	margin:20px auto;
+	font-size: 2.125rem;
+	text-align:center;
+	padding-bottom:6px;
+	font-family: Segoe UI,SegoeUI,"Helvetica Neue",Helvetica,Arial,sans-serif;
+	font-weight:500;
+
+}

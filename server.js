@@ -12,6 +12,7 @@ const Cryptr = require("cryptr");
 const cryptr = new Cryptr('KeyforUserNameEncryPt');
 const fs = require("fs");
 const fileUpload = require("express-fileupload");
+require('dotenv').config()
 
 //DATABASE CONNECTIONS
 const DBoptions = {
@@ -33,14 +34,14 @@ connection.connect((err) => {
 
 //MAILING SYSTEM
 var transporter = nodemailer.createTransport({
-    host: "172.16.2.30",
-    secure: true,
+    host: 'http://172.16.2.30',
     port: 8080,
-    proxy: "http://18cs10002:sanjaymama@172.16.2.30:8080",
+    secure: true,
+    proxy: process.env.http_proxy,
     service: "gmail",
     auth: {
-        user: "akshat.prodexiitkgp@gmail.com",
-        pass: "prodex@123"
+        user: process.env.gmail_id,
+        pass: process.env.gmail_pass
     }
 });
 
@@ -84,7 +85,16 @@ app.get("/script/jquery.js", (req, res) => {
 
 //HOME PAGE
 app.get("/", (req, res) => {
-    res.render("home.pug", { authenticationStatus: req.isAuthenticated(), aukaat: req.cookies.aukaat });
+
+
+    connection.query("SELECT * FROM timeline;", (error, rows, fields) => {
+
+        if(error)
+            throw error;
+
+        res.render("home.pug", { authenticationStatus: req.isAuthenticated(), aukaat: req.cookies.aukaat, timeline_set: rows });
+
+    })
     console.log(req.isAuthenticated());
     console.log(req.cookies.aukaat);
 });
@@ -626,6 +636,29 @@ app.get("/review-ideas", (req, res) => {
 
 });
 
+//ADMIN APPROVED IDEAS PAGE
+
+app.get("/approved-ideas", (req, res) => {
+
+    if(!req.isAuthenticated()){
+        res.redirect("/");
+    }else{
+        if(req.cookies.aukaat == "admin"){
+
+            connection.query("SELECT * FROM approved_ideas", (err, rows) => {
+                if(err)
+                    console.log("Error in reading approved ideas ;-( ");
+                else{
+                    console.log("admin fetched approved ideas");
+                    res.render("approvedideas.pug", {authenticationStatus: req.isAuthenticated(), aukaat: req.cookies.aukaat, data : rows});
+
+                }
+            })
+        }
+    }
+
+});
+
 //IDEAS PAGE
 
 app.get("/idea/:id", (req, res) => {
@@ -654,6 +687,128 @@ app.get("/idea/:id", (req, res) => {
 
 });
 
+//APPROVED IDEA PAGE
+
+app.get("/approved-idea/:id", (req, res) => {
+
+    if(!req.isAuthenticated()){
+        res.redirect("/");
+    }else{
+        if(req.cookies.aukaat == "admin"){
+
+            connection.query("SELECT * FROM approved_ideas WHERE id = ?", [req.params.id], (err, rows) => {
+                if(err){
+                    console.log("Error in accessing individual idea ;-)");
+                }else{
+
+                    if(rows.length == 0){
+                        res.send("no data here");
+                    }else{
+
+                        res.render("individualapprovedidea.pug", {authenticationStatus: req.isAuthenticated(), aukaat: req.cookies.aukaat, data : rows})
+
+                    }                    
+                }
+            })
+        }
+    }
+
+});
+
+//TAKE ACTIONS ON IDEAS
+
+app.post("/judge-idea/:id", (req, res) => {
+
+    var id = req.params.id;
+    var action = req.body.action;
+    // console.log("judging...");
+
+
+    if(action == "approve"){
+
+        connection.query("INSERT INTO approved_ideas (id, name, summary, idea, reg_date, email) SELECT * FROM ideas WHERE id = ?;",[id], (err) => {
+            if(err){
+                // throw err;
+                console.log("error in approving ideas ;-(");
+            }else{
+                res.send("done");
+                console.log("idea with id: " +id+ " approved by admin");
+                connection.query("DELETE FROM ideas WHERE id = ?", [id], (err) => {
+                    if(err){
+                        console.log("ideas could not be removed after judging;-(");
+                    }
+                })
+            }
+        })
+    }
+
+    if(action == "reject"){
+
+        connection.query("INSERT INTO rejected_ideas (id, name, summary, idea, reg_date, email) SELECT * FROM ideas WHERE id = ?;",[id], (err) => {
+            if(err){
+                // throw err;
+                console.log("error in rejecting ideas ;-(");
+            }else{
+                connection.query("INSERT INTO rejected_ideas (id, name, summary, idea, reg_date, email) SELECT * FROM approved_ideas WHERE id = ?;",[id], (err) => {
+                    if(err){
+                        console.log("error in rejecting ideas ;-(");
+                    }
+                });
+                res.send("done");
+                console.log("idea with id: " +id+ " rejected by admin");
+                connection.query("DELETE FROM ideas WHERE id = ?", [id], (err) => {
+                    if(err){
+                        console.log("ideas could not be removed after judging;-(");
+                    }
+                })
+                connection.query("DELETE FROM approved_ideas WHERE id = ?", [id], (err) => {
+                    if(err){
+                        console.log("ideas could not be removed after judging;-(");
+                    }
+                })
+            }
+        })
+    }
+
+})
+
+//SEND COMMENTS
+app.post("/send-comment", (req, res)=> {
+
+    var email = req.body.email;
+    var text = req.body.text;
+
+    transporter.sendMail({
+        from: "akshat.prodexiitkgp@gmail.com",
+        to: email,
+        subject: "Reply for your nice idea u submitted on our site :P",
+        text: text
+    }, (err, info) => {
+        if(err){
+            console.log(err);
+            console.log("Error in sending comment;-(");
+            res.send("error");
+        }else{
+            console.log(info);
+            res.send("success!");
+        }
+    });
+
+});
+
+//IMAGE FETCH HANDLER FOR HOME PAGE
+app.get("/images/:image_name", (req, res) => {
+    
+    res.sendFile(__dirname + "/images/" + req.params.image_name);
+    
+});
+
+//STYLESHEET FETCH HANDLER
+app.get("/stylesheets/:name", (req, res) => {
+    
+    res.sendFile(__dirname + "/views/stylesheets/" + req.params.name);
+    
+});
 
 // //PROFILE PHOTO FETCH HANDLER
 // app.get("/taikhana/images/:username", (req, res) => {

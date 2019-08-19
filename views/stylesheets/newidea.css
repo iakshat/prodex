@@ -1,0 +1,29 @@
+*{
+    margin: 0px;
+	padding: 0px;
+ }
+ 
+ body
+ {
+    letter-spacing: -.022em;
+	background-color: whitesmoke;
+	font-family: "SF Pro Text","SF Pro Icons","Helvetica Neue","Helvetica","Arial",sans-serif;
+ }
+
+ .sendButton
+ {
+	color: whitesmoke;
+	display: block;
+	background-color: #1f1f1f;
+ }
+
+ .sendButton:hover
+ {
+	color: #1f1f1f;
+	background-color: white;
+ }
+
+ .define-width
+ {
+	 width: 200px;
+ }

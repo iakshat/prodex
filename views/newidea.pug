@@ -1,30 +1,32 @@
 html
     head
         title Idea
+        link(rel="stylesheet"  href="/stylesheets/newidea.css")
+        link(rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous")
     
     body
 
-        include ./header.pug
+        //- include ./header.pug
 
         include ./navbar.pug
 
         h2 Submit Ideas
 
         h5 Your Name:
-        input#name(type = 'text', placeholder="Name")
+        input#name(type = 'text', placeholder="Name" class="define-width form-control form-control-lg")
 
         h5 Email:
-        input#email(type = 'text', placeholder="example@email.com")
+        input#email(type = 'text', placeholder="example@email.com" class="define-width form-control form-control-lg")
 
         h5 Basic Idea:
-        input#summary(type = 'text' placeholder = "Eg. A Revolutionary smart pen")
+        input#summary(type = 'text' placeholder = "Eg. A Revolutionary smart pen" class="define-width form-control form-control-lg")
 
         h5 Please clearly explain you idea:
         textarea#idea(placeholder = "Idea" cols = 100 rows = 18)
 
         br
         br
-        button#submit Send!
+        button#submit(class="sendButton btn-lg btn-block define-width") Send!
 
         div#output
 

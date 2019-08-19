@@ -1,6 +1,6 @@
 html
     head
-        title Review
+        title Approved Ideas
     
     body
 
@@ -10,19 +10,22 @@ html
 
         //- p #{JSON.stringify(data)}
 
-        h1 Ideas List
+        h1 Approved Ideas List
+
+        if(data.length == 0)
+            div No Approved Ideas
 
         for entry in data
-            a(href="/idea/" + entry.id).
+            a(href="/approved-idea/" + entry.id).
                 id: #{entry.id}
             br
-            a(href="/idea/" + entry.id).
+            a(href="/approved-idea/" + entry.id).
                 name: #{entry.name} 
             br
-            a(href="/idea/" + entry.id).
+            a(href="/approved-idea/" + entry.id).
                 email: #{entry.email} 
             br
-            a(href="/idea/" + entry.id).
+            a(href="/approved-idea/" + entry.id).
                 summary: #{entry.summary}
             br
             br

@@ -27,11 +27,15 @@ html
         p #{data.idea}
         br
         br
-
-        button#approve Approve
         
         button#reject Reject 
+        br
+        br
 
+        if(authenticationStatus)
+            textarea#comment(placeholdeer = "Comment" cols=50 rows=10)
+            br
+            button#send_comment Send Mail
 
 
         br
@@ -47,28 +51,6 @@ html
             var data = !{JSON.stringify(data)};
             //- console.log(data);
         
-            $("#approve").on("click", function() {
-
-                var jso = {action: "approve"};
-
-                $.ajax({
-                    method: 'POST',
-                    url: "/judge-idea/" + data.id,
-                    data: jso,
-                    success: (res)=>{
-                        console.log(res);
-                        if(res == "done"){
-                            $("#output").text("Approved!");
-                            window.location.href = "/review-ideas"
-
-                        }else{
-                            $("#output").text("Error in server");
-
-                        }    
-                    }
-
-                });
-            });
 
             $("#reject").on("click", function() {
 
@@ -92,6 +74,30 @@ html
 
                 });
             });
+
+            $("#send_comment").on("click", function() {
+
+                $("#output").text("Please Wait while we send the mail....");
+
+
+                $.ajax({
+
+                    method: "POST",
+                    url: "/send-comment",
+                    data: {
+                        email: data.email,
+                        text: $("#comment").val()
+                    },
+                    success: (res)=>{
+                        if(res == "success!"){
+                            $("#output").text("Comment Sent!");
+                        }else if(res=="error"){
+                            $("#output").text("Internal Server Error!!");
+                        }
+                    }
+                });
+
+            })
 
 
 

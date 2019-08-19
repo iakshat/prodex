@@ -1,23 +1,91 @@
 html
-    head
-        title Home
+  head
+    title Home
+    link(rel="stylesheet"  href="/stylesheets/home.css")
+
     body
-        
-        include ./header.pug
 
-        include ./navbar.pug
+      //-include ./header.pug
 
-        h1 This is the Home Page
+      include ./navbar.pug
 
-        include ./footer.pug
+      div(class="image_slider")
+        img( class="slide" src="/images/image 4.jpg")
+        img( class="slide" src="/images/image 3.jpg")
+        img( class="slide" src="/images/image 2.jpg")
+        img( class="slide" src="/images/image 1.jpg")
 
-        script(src="/script/jquery.js")
 
-        script.
-            console.log($(document));
+      header( class="about_us")
+        h1(class="about") ABOUT US
 
-    style.
-        body{
-            text-align: center;
+
+      //- div(class="timeline")
+      //-   div( class="container left")
+      //-     div(class="content")
+      //-       h2 2017
+      //-       p Lorem ipsum dolor sit amet, quo ei simul congue exerci, ad nec admodum perfecto mnesarchum, vim ea mazim fierent detracto. Ea quis iuvaret expetendis his, te elit voluptua dignissim per, habeo iusto primis ea eam.
+
+      //-   div(class="container right")
+      //-     div(class="content")
+      //-       h2 2016
+      //-       p Lorem ipsum dolor sit amet, quo ei simul congue exerci, ad nec admodum perfecto mnesarchum, vim ea mazim fierent detracto. Ea quis iuvaret expetendis his, te elit voluptua dignissim per, habeo iusto primis ea eam.
+
+      //-   div(class="container left")
+      //-     div( class="content")
+      //-       h2 2015
+      //-       p Lorem ipsum dolor sit amet, quo ei simul congue exerci, ad nec admodum perfecto mnesarchum, vim ea mazim fierent detracto. Ea quis iuvaret expetendis his, te elit voluptua dignissim per, habeo iusto primis ea eam.
+
+      //-   div(class="container right")
+      //-     div( class="content")
+      //-       h2 2012
+      //-       p Lorem ipsum dolor sit amet, quo ei simul congue exerci, ad nec admodum perfecto mnesarchum, vim ea mazim fierent detracto. Ea quis iuvaret expetendis his, te elit voluptua dignissim per, habeo iusto primis ea eam.
+
+      //-   div(class="container left")
+      //-     div( class="content")
+      //-       h2 2011
+      //-       p Lorem ipsum dolor sit amet, quo ei simul congue exerci, ad nec admodum perfecto mnesarchum, vim ea mazim fierent detracto. Ea quis iuvaret expetendis his, te elit voluptua dignissim per, habeo iusto primis ea eam.
+
+      //-   div(class="container right")
+      //-     div( class="content")
+      //-       h2 2007
+      //-       p Lorem ipsum dolor sit amet, quo ei simul congue exerci, ad nec admodum perfecto mnesarchum, vim ea mazim fierent detracto. Ea quis iuvaret expetendis his, te elit voluptua dignissim per, habeo iusto primis ea eam.
+
+      div(class="timeline")
+        - var x = 1;
+        for event in timeline_set
+          if(x % 2 == 1)
+            - x++
+            div(class="container right")
+              div( class="content")
+                h2 #{event.year}
+                p #{event.data}
+          else
+            - x++
+            div(class="container left")
+              div( class="content")
+                h2 #{event.year}
+                p #{event.data}
+
+
+      include ./footer.pug
+
+      script(src="/script/jquery.js")
+      script.
+        var slideIndex = 0;
+        carousel();
+
+        function carousel() {
+        var i;
+        var x = document.getElementsByClassName("slide");
+        for (i = 0; i < x.length; i++) {
+            x[i].style.display = "none"; 
         }
-        
+        slideIndex++;
+        if (slideIndex > x.length) {slideIndex = 1} 
+        x[slideIndex-1].style.display = "block"; 
+        setTimeout(carousel, 4500);
+        }
+
+      script.
+        console.log($(document));

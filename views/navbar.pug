@@ -1,49 +1,40 @@
-div.topnav
-    a(href="/", style="float:left;") Home
+link(rel="stylesheet"  href="/stylesheets/navbar.css")
 
-    a(href="/submit-idea") Suggest New Ideas
+div(class="upper_sec")
+	
+    a(href="/")
+        img(id="logo" src="/images/prodeximg.png" style="float:left")
+    
+    div.nav_bar
+        
+        
 
-
-    if(authenticationStatus)
-        a(href="/logout") Logout
-        a(href="/review-ideas") Review Ideas
-        //- a(href="/profile") Profile
-        //- a(href="/articles") Articles
-        //- a(href="/newarticle") New Article
-        //- a(href="/projects") Projects
-    //- else
-    //-     a(href="/login") Login
-    //-     a(href="/newuser") New User
-
-    //- if(authenticationStatus && aukaat == "editor")
-    //-     a(href="/reviewarticle/editor") Edit Articles
-    //- if(authenticationStatus && aukaat == "admin")
-    //-     a(href="/reviewarticle/admin") Review Articles
+        li
+            a(href="/submit-idea") Suggest New Ideas
 
 
+        if(authenticationStatus)
+            li
+                a(href="/logout") Logout
+            li
+                a(href="/review-ideas") Review Ideas
+            li  
+                a(href="/approved-ideas") Approved Ideas
 
-style.
-    .topnav{
-        width: 100%;
-        padding: 5px 0px;
-        margin-top: 5px;
-        margin-bottom: 5px;
-        background-color: #23DFC9;
-        color: whitesmoke;
-        float: left;
-        display: block;
-    }
 
-    .topnav a{
-        display: block;
-        padding: 8px 10px;
-        background-color: #23DFC9;
-        color: whitesmoke;
-        float: right;
-        text-decoration:none;
-    }
 
-    .topnav a:hover{
-        background-color: #4db6ac;
-        color: white
-    }
+        li
+            a(href="/") Home
+
+            //- a(href="/profile") Profile
+            //- a(href="/articles") Articles
+            //- a(href="/newarticle") New Article
+            //- a(href="/projects") Projects
+        //- else
+        //-     a(href="/login") Login
+        //-     a(href="/newuser") New User
+
+        //- if(authenticationStatus && aukaat == "editor")
+        //-     a(href="/reviewarticle/editor") Edit Articles
+        //- if(authenticationStatus && aukaat == "admin")
+        //-     a(href="/reviewarticle/admin") Review Articles
